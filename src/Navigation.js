@@ -1,36 +1,44 @@
 import { Navigation } from 'react-native-navigation'
 
-export const gotToAuth = () => {
+export const goToAuth = () => {
 
-Navigation.setDefaultOptions({
+    Navigation.setDefaultOptions({
         topBar: {
             visible: false,
             drawBehind: true,
             animate: false,
+
+        },
+        layout: {
+            orientation: ['portrait']
         }
-});
-Navigation.setRoot({
-    root : {
-        stack :{
-            children : [
-                {
-                    component: {
-                        id: 'sms',
-                        name: 'SMSverification',
-                        options: {},
-                        passProps: {}
-                    },
+
+    });
+    Navigation.setRoot({
+        root : {
+            stack :{
+                options:{
+                    layout: {
+                        orientation: ['portrait']
+                    }
                 },
-                {
-                    component: {
-                        id: 'auth',
-                        name: 'Authentication',
-                        options: {},
-                        passProps: {}
-                    },
-                },
-            ],
+                id:'authStack',
+                children : [
+                    {
+                        component: {
+                            id: 'authentication',
+                            name: 'Authentication',
+                            options: {
+                                layout: {
+                                    orientation: ['portrait']
+                                }
+                            },
+                            passProps: {}
+                        },
+                    }
+                ],
+            }
+
         }
-    }
-})
+    })
 }

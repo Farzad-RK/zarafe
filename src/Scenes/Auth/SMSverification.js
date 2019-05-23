@@ -27,15 +27,8 @@ export default class SMSverification extends Component {
         this.keyboardWillHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
         this.returnOpacity = new Animated.Value(1)
     }
-    returnToAuth(){
-       Navigation.push('sms',{
-           component: {
-               id: 'auth',
-               name: 'Authentication',
-               options: {},
-               passProps: {}
-           }
-       })
+     returnToAuth (){
+       Navigation.pop('SMSverification')
     }
     keyboardWillShow  () {
         Animated.timing(this.returnOpacity, {

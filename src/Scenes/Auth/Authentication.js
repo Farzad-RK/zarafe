@@ -13,7 +13,18 @@ export default class Authentication extends Component {
         super(props)
     }
     onPress(){
-       Navigation.popTo('sms')
+       Navigation.push('authStack',{
+           component: {
+               id: 'SMSverification',
+               name: 'SMSverification',
+               options: {
+                   layout: {
+                       orientation: ['portrait']
+                   }
+               },
+               passProps: {}
+           },
+       })
     }
     render(){
         const offset =80
