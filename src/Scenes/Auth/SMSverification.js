@@ -9,13 +9,23 @@ import {View,
         KeyboardAvoidingView,
         Keyboard
         } from "react-native"
-import {Regular,Ultra} from "../../Data"
+import {FaNum, Regular, Ultra} from "../../Data"
 import bottomImage from "../../../assets/img/auth-bottom.png"
 import TopLine from "../../../assets/img/top-line.svg"
 import RegularButton from "../../Components/RegularButton";
+import axios from "axios"
+import AsyncStorage from '@react-native-community/async-storage';
 import {Navigation} from "react-native-navigation";
+import {goToHome, hideError, hideSpinner, showError, showSpinner} from "../../Navigation";
 
-
+const storeCredentials = async (response) =>{
+    try {
+        await  AsyncStorage.setItem('@phoneNumber',this.props.phoneNumber);
+        await  AsyncStorage.setItem('@token',response.data.access_token);
+    } catch (e) {
+        // saving error
+    }
+}
 export default class SMSverification extends Component {
 
     constructor(props){
@@ -24,8 +34,16 @@ export default class SMSverification extends Component {
         this.keyboardWillShow = this.keyboardWillShow.bind(this)
         this.keyboardWillHide = this.keyboardWillHide.bind(this)
         this.keyboardWillShowSub = Keyboard.addListener('keyboardDidShow', this.keyboardWillShow);
-        this.keyboardWillHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardWillHide)
+        this.keyboardWillHideSub = Keyboard.addListener('keyboardDidHide', this.keyboardWillHide);
+        this.handleKeyPress = this.handleKeyPress.bind(this);
+        this.onSendSmsCode = this.onSendSmsCode.bind(this);
+        this.onResendCode = this.onResendCode.bind(this);
         this.returnOpacity = new Animated.Value(1)
+        this.state = {
+            smsCode:["","","","","",""],
+            remainedTime : 90,
+            dis:true,
+        }
     }
      returnToAuth (){
        Navigation.pop('SMSverification')
@@ -54,21 +72,109 @@ export default class SMSverification extends Component {
                 return this.fourthInput;
             case 5:
                 return this.fifthInput;
-            case 6:
-                return this.sixthInput;
+        }
+    }
+    handleKeyPress({ nativeEvent: { key: keyValue } },index){
+        if (keyValue === 'Backspace'&&index!==1) {
+            const previousRef = this.getRef(index-1);
+            previousRef.focus()
         }
     }
     onChangeText(event,index){
-        if(event.nativeEvent.text.length>0&&index!==6){
-            const nextRef = this.getRef(index+1)
+        let code =this.state.smsCode;
+        code[index-1] = event.nativeEvent.text;
+        this.setState({
+            smsCode:code
+        })
+        if(event.nativeEvent.text.length>0&&index!==5)
+        {
+            const nextRef = this.getRef(index+1);
             nextRef.focus()
         }
     }
+    onResendCode(){
+        this.setState({
+            remainedTime : 90,
+            dis:true,
+        })
+        showSpinner();
+        axios.defaults.timeout = 5*1000;
+        axios({
+            method: "POST",
+            url:"http://193.176.243.56/api/send_otp",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data:JSON.stringify({
+                phone_number:this.props.phoneNumber
+            })
+        }).then( response => {
+            hideSpinner()
+        }).catch( error =>{
+            hideSpinner();
+            showError("noConnection");
+            setTimeout( ()=> hideError(),2000)
+        })
+    }
+    onSendSmsCode(){
+        let code = "";
+        this.state.smsCode.forEach( e =>{
+            code = code+e
+        });
+        showSpinner()
+        axios({
+            method: "POST",
+            url:"http://193.176.243.56/api/auth/signup",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data:JSON.stringify({
+                phone_number:this.props.phoneNumber,
+                token:code
+            })
+        }).then( response => {
+            hideSpinner()
+            console.log(response)
+            storeCredentials(response).then(
+                ()=>{
+                    goToHome(3)
+                }
+            ).catch( e =>{
+
+            } )
+
+        }).catch( error =>{
+                hideSpinner()
+                showError("invalidInput")
+                setTimeout( ()=> hideError(),2000)
+            })
+    }
+    componentDidMount(){
+        this.setTimer();
+    }
+    setTimer (){
+        this.timer = setInterval(()=>{
+            const currentTime = this.state.remainedTime-1
+            this.setState({
+                remainedTime : currentTime,
+            })
+            if(currentTime===0){
+                this.setState({
+                    dis:false
+                })
+                clearInterval(this.timer)
+            }
+
+        },1000)
+    }
     componentWillUnmount(){
-        this.keyboardWillShowSub.remove();
         this.keyboardWillHideSub.remove();
+        this.keyboardWillShowSub.remove();
+        this.returnOpacity.removeAllListeners();
+        clearInterval(this.timer);
     }
     render(){
+        const displayTime = Math.floor(this.state.remainedTime/60)+":"+(this.state.remainedTime%60)
         return(
             <View style={styles.mainContainer}>
                 <Animated.View  style={styles.titleContainer}>
@@ -80,13 +186,14 @@ export default class SMSverification extends Component {
                         <Text style={styles.heading}>ورود</Text>
                     </View>
                     <View style={styles.timeAndDescContainer}>
-                        <Text style={styles.timer}>۲:۳۴</Text>
-                        <Text style={styles.description}>کد به شماره ۰۹۳۹۷۴۴۹۸۰۰ ارسال شد.</Text>
+                        <Text style={styles.timer}>{displayTime}</Text>
+                        <Text style={styles.description}>کد به شماره شما شد. </Text>
                     </View>
                     <View style={styles.inputContainer}>
 
                          <View style={styles.squareContainer}>
                              <TextInput
+                                 onKeyPress={ e => this.handleKeyPress(e,1) }
                                  onChange={e => this.onChangeText(e,1)}
                                  ref={ x => this.firstInput =x }
                                  blurOnSubmit={false}
@@ -96,6 +203,7 @@ export default class SMSverification extends Component {
                          </View>
                         <View style={styles.squareContainer}>
                              <TextInput
+                                 onKeyPress={ e => this.handleKeyPress(e,2) }
                                  onChange={e => this.onChangeText(e,2)}
                                  ref={ x => this.secondInput =x }
                                  style={styles.squareInput}
@@ -105,6 +213,7 @@ export default class SMSverification extends Component {
                          </View>
                         <View style={styles.squareContainer}>
                              <TextInput
+                                 onKeyPress={ e => this.handleKeyPress(e,3) }
                                  onChange={e => this.onChangeText(e,3)}
                                  ref={ x => this.thirdInput =x }
                                  style={styles.squareInput}
@@ -113,6 +222,7 @@ export default class SMSverification extends Component {
                          </View>
                         <View style={styles.squareContainer}>
                              <TextInput
+                                 onKeyPress={ e => this.handleKeyPress(e,4) }
                                  onChange={e => this.onChangeText(e,4)}
                                  ref={ x => this.fourthInput =x }
                                  style={styles.squareInput}
@@ -121,16 +231,9 @@ export default class SMSverification extends Component {
                          </View>
                         <View style={styles.squareContainer}>
                              <TextInput
+                                 onKeyPress={ e => this.handleKeyPress(e,5) }
                                  onChange={e => this.onChangeText(e,5)}
                                  ref={ x => this.fifthInput =x }
-                                 style={styles.squareInput}
-                                 maxLength={1}
-                                 keyboardType={"number-pad"}/>
-                         </View>
-                        <View style={styles.squareContainer}>
-                             <TextInput
-                                 onChange={e => this.onChangeText(e,6)}
-                                 ref={ x => this.sixthInput =x }
                                  style={styles.squareInput}
                                  maxLength={1}
                                  keyboardType={"number-pad"}/>
@@ -146,8 +249,8 @@ export default class SMSverification extends Component {
                     </Animated.View>
                 </View>
                 <KeyboardAvoidingView style={styles.buttonsContainer} keyboardVerticalOffset={55} behavior="padding" enabled>
-                    <RegularButton title={"ارسال دوباره کد"} style={{backgroundColor:'#6c2a50'}}/>
-                    <RegularButton title={"مرحله بعد"} />
+                    <RegularButton onPress={this.onResendCode} dis={this.state.dis} title={"ارسال دوباره کد"} style={{backgroundColor:'#6c2a50'}}/>
+                    <RegularButton onPress={this.onSendSmsCode} title={"مرحله بعد"} />
                 </KeyboardAvoidingView>
                 <View style={styles.bottomContainer}>
                     <Image style={styles.bottomImage} source={bottomImage}/>
@@ -195,7 +298,7 @@ const styles = StyleSheet.create({
     },
     timer:{
         textAlign:'center',
-        fontFamily:Regular,
+        fontFamily:FaNum,
         color:'#fff',
         fontSize:18,
     },

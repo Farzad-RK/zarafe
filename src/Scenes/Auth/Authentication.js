@@ -1,30 +1,62 @@
 import React,{Component} from "react"
-import {View, Text, StyleSheet, Image, KeyboardAvoidingView, Keyboard, Animated} from "react-native"
+import {View, Text, StyleSheet, Image, KeyboardAvoidingView} from "react-native"
 import {Regular} from "../../Data"
 import bottomImage from "../../../assets/img/auth-bottom.png"
 import TopLine from "../../../assets/img/top-line.svg"
 import InputField from "../../Components/InputField"
 import RegularButton from "../../Components/RegularButton";
 import { Navigation } from 'react-native-navigation'
-
+import {hideError, hideSpinner, showError, showSpinner} from "../../Navigation";
+import axios from "axios"
+import AsyncStorage from '@react-native-community/async-storage';
 export default class Authentication extends Component {
 
     constructor(props){
-        super(props)
+        super(props);
+        this.state = {
+            phoneNumber:""
+        };
+        this.onPhoneNumberChanged = this.onPhoneNumberChanged.bind(this)
+        this.onPress = this.onPress.bind(this)
+    }
+    onPhoneNumberChanged(text){
+            this.setState({
+                phoneNumber:text
+            })
     }
     onPress(){
-       Navigation.push('authStack',{
-           component: {
-               id: 'SMSverification',
-               name: 'SMSverification',
-               options: {
-                   layout: {
-                       orientation: ['portrait']
-                   }
-               },
-               passProps: {}
-           },
-       })
+        showSpinner();
+        axios.defaults.timeout = 5*1000;
+        axios({
+            method: "POST",
+            url:"http://193.176.243.56/api/send_otp",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            data:JSON.stringify({
+                phone_number:this.state.phoneNumber
+            })
+        }).then( response => {
+            hideSpinner();
+            Navigation.push('authentication', {
+                component: {
+                    id:'SMSverification',
+                    name: 'SMSverification',
+                    options:{
+                        layout: {
+                            orientation: ['portrait']
+                        }
+                    },
+                    passProps: {
+                        phoneNumber:this.state.phoneNumber
+                    }
+                }
+            });
+        }).catch( error =>{
+                hideSpinner();
+                showError("invalidInput");
+                setTimeout( ()=> hideError(),3500);
+            })
     }
     render(){
         const offset =80
@@ -38,7 +70,7 @@ export default class Authentication extends Component {
                     <View style={styles.headingContainer}>
                         <Text style={styles.heading}>ورود</Text>
                     </View>
-                    <InputField label={"شماره تماس"}  keyboardType={"phone-pad"}/>
+                    <InputField onPhoneNumberChanged={this.onPhoneNumberChanged} label={"شماره تماس"}  keyboardType={"phone-pad"}/>
                     <KeyboardAvoidingView style={styles.buttonContainer} keyboardVerticalOffset={offset} behavior="padding" enabled>
                         <RegularButton onPress={this.onPress} title={"مرحله بعد"}  />
                     </KeyboardAvoidingView>
@@ -75,7 +107,6 @@ const styles = StyleSheet.create({
         flex:6,
     },
     headingContainer: {
-        borderWidth:1,
         marginTop:15,
         marginBottom:20
     },

@@ -14,6 +14,9 @@ import com.reactnativenavigation.NavigationApplication;
 import com.reactnativenavigation.react.NavigationReactNativeHost;
 import com.reactnativenavigation.react.ReactGateway;
 
+//async storage
+
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +45,8 @@ import java.util.List;
             // No need to add RnnPackage and MainReactPackage
             return Arrays.<ReactPackage>asList(
                 // eg. new VectorIconsPackage(),
-                new SvgPackage()
+                new SvgPackage(),
+                new AsyncStoragePackage()
             );
         }
 

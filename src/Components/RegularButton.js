@@ -6,11 +6,19 @@ export default class RegularButton extends Component {
         super(props)
     }
     render(){
-        return(
-            <TouchableOpacity style={[styles.button,this.props.style]} onPress={this.props.onPress}>
-                <Text style={styles.title}>{this.props.title}</Text>
-            </TouchableOpacity>
-        )
+        if(this.props.dis){
+            return(
+                <TouchableOpacity disable style={[styles.button,this.props.style,{backgroundColor:'#b2bec3'}]} onPress={this.props.onPress}>
+                    <Text style={[styles.title,this.props.textStyle]}>{this.props.title}</Text>
+                </TouchableOpacity>
+            )
+        }else {
+            return(
+                <TouchableOpacity style={[styles.button,this.props.style]} onPress={this.props.onPress}>
+                    <Text style={[styles.title,this.props.textStyle]}>{this.props.title}</Text>
+                </TouchableOpacity>
+            )
+        }
     }
 }
 const styles = StyleSheet.create({
