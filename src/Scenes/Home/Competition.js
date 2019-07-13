@@ -10,31 +10,59 @@ import Coins from "../../../assets/img/coins.png"
 import RewardBackground from "../../../assets/img/reward-background.png"
 import Glitters from "../../../assets/img/glitters.png"
 import { Navigation } from 'react-native-navigation'
+import axios from "axios"
 import AsyncStorage from '@react-native-community/async-storage';
+import {hideError, hideSpinner, showError, showSpinner} from "../../Navigation";
+import credentials from "../../testCredentials"
 export default class Competition extends  Component {
 
     constructor(props){
         super(props)
         this.onPressStart = this.onPressStart.bind(this)
         this.state = {
-            answeredQuestions :4,
+            answeredQuestions :0,
             phoneNumber:"",
             token:""
-        }
-        this.getData()
+        };
+        this.getData();
+        this.getAnsweredQuestions()
     }
+
+    getAnsweredQuestions = () => {
+        axios.defaults.timeout = 5*1000;
+        axios({
+            method: "GET",
+            url: "http://193.176.243.56/api/results",
+            headers: {
+                "Authorization": credentials["token"],
+                "Content-Type": "application/json"
+            }
+        }).then(response => {
+            const { data : {answered_questions} } = response;
+            this.setState({
+                answeredQuestions :answered_questions
+            })
+        }).catch( error => {
+            hideSpinner();
+            showError("noConnection");
+            setTimeout( ()=> hideError(),3500);
+        })
+    };
     getData = async () => {
-        try {
+        try
+        {
             const token = await AsyncStorage.getItem('@token');
             const  phoneNumber = await AsyncStorage.getItem('@phoneNumber');
             this.setState({
                 token:token,
                 phoneNumber:phoneNumber
             })
-        } catch(e) {
+        }
+        catch(e)
+        {
             // error reading value
         }
-    }
+    };
     progressBar(){
         let percentage = (this.state.answeredQuestions*10)+"%";
         return(
@@ -43,16 +71,78 @@ export default class Competition extends  Component {
         )
     }
     onPressStart(){
-        Navigation.push("competitionStack",{
-            component:{
-                id:"ScorePhase",
-                name:"ScorePhase",
-                options:{
-                    layout:{
-                        orientation:['portrait']
-                    }
-                }
+        //Prepare questions api
+        showSpinner();
+        axios.defaults.timeout = 5*1000;
+        axios({
+            method: "GET",
+            url:"http://193.176.243.56/api/prepare_questions",
+            headers: {
+                "Authorization":this.state.token,
+                "Content-Type": "application/json"
             }
+        }).then( response => {
+            hideSpinner();
+            const {data : {status}} = response;
+            switch (status) {
+                //user answered all his/her questions
+                case "111" :
+                    Navigation.push("competitionStack",{
+                        component:{
+                            id:"ScorePhase",
+                            name:"ScorePhase",
+                            options:{
+                                layout:{
+                                    orientation:['portrait']
+                                },
+                                bottomTabs: { visible: false, drawBehind: true, animate: true }
+                            }
+                        }
+                    });
+                    break;
+                //questions already assigned
+                case "112":
+                    Navigation.push("competitionStack",{
+                        component:{
+                            id:"PrestartPhase",
+                            name:"PrestartPhase",
+                            options:{
+                                layout:{
+                                    orientation:['portrait']
+                                },
+                                bottomTabs: { visible: false, drawBehind: true, animate: true }
+                            },
+                            passProps :{
+                                token :credentials["token"],
+                                phoneNumber:credentials["phoneNumber"]
+                            }
+                        }
+                    });
+                    break;
+                //‫‪‫ all 10 questions are ready
+                case "200" :
+                    Navigation.push("competitionStack",{
+                        component:{
+                            id:"PrestartPhase",
+                            name:"PrestartPhase",
+                            options:{
+                                layout:{
+                                    orientation:['portrait']
+                                },
+                                bottomTabs: { visible: false, drawBehind: true, animate: true }
+                            },
+                            passProps :{
+                                token :credentials["token"],
+                                phoneNumber:credentials["phoneNumber"]
+                            }
+                        }
+                    });
+                    break;
+            }
+        }).catch( error =>{
+            hideSpinner();
+            showError("noConnection");
+            setTimeout( ()=> hideError(),3500);
         })
     }
     render(){
@@ -140,7 +230,7 @@ export default class Competition extends  Component {
                                         شروع
                                     </Text>
                                     <Text style={{flex:0.8,color:"#fff",textAlignVertical:"center",textAlign:"center",fontSize:14,fontFamily:FaNum}}>
-                                        4/10
+                                        {this.state.answeredQuestions+"/10"}
                                     </Text>
                                 </View>
                             </TouchableOpacity>

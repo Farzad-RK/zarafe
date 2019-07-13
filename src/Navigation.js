@@ -131,24 +131,52 @@ export const goToHome = (currentIndex)=>{
                                 }
                             ]
                         },
-                    },
-                    {
-                        component: {
-                            id:'Profile',
-                            name: 'Profile',
+                    },{
+                        stack:{
                             options: {
-                                bottomTab: {
-                                    fontSize: 10,
-                                    text:"",
-                                    icon: profile,
-                                    selectedIconColor:'#f2e443',
-                                },
                                 layout: {
-                                    orientation: ['portrait']
+                                    orientation: ['portrait', 'landscape']
                                 }
-                            }
+                            },
+                            id:"profileStack",
+                            children:[
+                                {
+                                    component: {
+                                        id:'Profile',
+                                        name: 'Profile',
+                                        options: {
+                                            bottomTab: {
+                                                fontSize: 10,
+                                                text:"",
+                                                icon: profile,
+                                                selectedIconColor:'#f2e443',
+                                            },
+                                            layout: {
+                                                orientation: ['portrait']
+                                            }
+                                        }
+                                    },
+                                }
+                            ]
                         },
                     }
+                    // {
+                    //     component: {
+                    //         id:'Profile',
+                    //         name: 'Profile',
+                    //         options: {
+                    //             bottomTab: {
+                    //                 fontSize: 10,
+                    //                 text:"",
+                    //                 icon: profile,
+                    //                 selectedIconColor:'#f2e443',
+                    //             },
+                    //             layout: {
+                    //                 orientation: ['portrait']
+                    //             }
+                    //         }
+                    //     },
+                    // }
                 ]
             }
         }

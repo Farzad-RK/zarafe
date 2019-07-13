@@ -9,7 +9,7 @@ export default  class PrestartPhase extends Component{
         this.intervalId=null;
         this.state = {
             elapsedTime:3
-        }
+        };
     }
     componentDidMount(){
         this.intervalId = setInterval(()=>{
