@@ -3,8 +3,9 @@ import {View,Text,Image,ImageBackground,TouchableOpacity} from "react-native"
 import StartButton from "../../../assets/img/startButton.png"
 import RegularButton from "../../Components/RegularButton"
 import Camera from "../../../assets/img/camera.png"
-import {FaNum, HEIGHT, Regular} from "../../Data"
+import {FaNum, FaNumBold, HEIGHT, Regular} from "../../Data"
 import {Navigation} from "react-native-navigation";
+import {getPersianNumber} from "../../Helper";
 
 export default class PreparationPhase extends Component {
 
@@ -12,6 +13,7 @@ export default class PreparationPhase extends Component {
     {
         super(props)
         this.onPressStart = this.onPressStart.bind(this)
+
     }
     onPressStart(){
         Navigation.push("competitionStack",{
@@ -22,12 +24,21 @@ export default class PreparationPhase extends Component {
                     layout:{
                         orientation:['portrait']
                     }
+                },
+                passProps : {
+                    token:this.props.token,
+                    phoneNumber:this.props.phoneNumber,
+                    data:this.props.data
                 }
             }
         })
     }
+    onPressCancel = () =>{
+        Navigation.popTo("Competition")
+    };
     render()
-    {
+    {   const { data : { current_question_number } } = this.props;
+        const currentQuestion = "سوال " + getPersianNumber((current_question_number+1));
         return(
             <View style={{flex:1}}>
                 <View style={{
@@ -41,14 +52,14 @@ export default class PreparationPhase extends Component {
                         color:"#fff",
                         fontSize:18,
                         textAlignVertical:"center"}}>
-                        سوال اول
+                        {currentQuestion}
                     </Text>
                 </View>
                 <View style={{flex:10,backgroundColor:"#2b2d5d"}}>
                     <View style={{flex:2}}>
                         <View style={{flex:1,alignItems:"center",justifyContent:"flex-end"}}>
                             <Text style={{fontFamily:FaNum,fontSize:22,color:"#fff"}}>
-                                1/10
+                                {current_question_number+1+"/10"}
                             </Text>
                         </View>
                         <View style={{justifyContent:"center",alignItems:"center",flex:1}}>
@@ -70,7 +81,7 @@ export default class PreparationPhase extends Component {
                         </TouchableOpacity>
                         <View style={{flex:4}}>
                             <View style={{flex:1.4,justifyContent:"flex-end",alignItems:"center"}}>
-                                <RegularButton title={"انصراف"} style={{backgroundColor:"#c2272d"}}/>
+                                <RegularButton title={"انصراف"} onPress={this.onPressCancel} style={{backgroundColor:"#c2272d"}}/>
                             </View>
                             <View style={{flex:3}}>
                                 <Image source={Camera} resizeMode="stretch" style={{flex:1,width:undefined,height:undefined}}/>

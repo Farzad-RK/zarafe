@@ -1,6 +1,6 @@
 import React,{Component} from "react"
 import {View,Text,ImageBackground} from "react-native"
-import {FaNum, HEIGHT, Regular, WIDTH} from "../Data"
+import {FaNum, FaNumBold, HEIGHT, Regular, WIDTH} from "../Data"
 import Svg, {ClipPath, Defs, Path, Image, Use} from "react-native-svg"
 import bronzeMedal from "../../assets/img/bronze-medal.png"
 import goldMedal from "../../assets/img/gold-medal.png"
@@ -25,13 +25,13 @@ export default class UserRow extends Component{
                 backgroundColor:"#373866",
                 alignSelf:"center",
                 flexDirection:"row",
-                height:HEIGHT/12}}>
+                height:HEIGHT/10}}>
             <View style={{flex:1.5,alignItems:'center',justifyContent:'center'}}>
-                <View style={{width:"100%",height:"85%"}}>
+                <View style={{width:"100%",height:"90%"}}>
                     <ImageBackground resizeMode="contain" source={normalMedal} style={{flex:1}}>
                         <View
-                            style={{width:'100%',height:WIDTH/20,marginTop:WIDTH/30}}>
-                        <Text style={{fontFamily:FaNum,fontSize:10,color:"#a06f06",flex:1,textAlign:'center'}}>
+                            style={{width:'100%',height:WIDTH/20,marginTop:WIDTH/8.5}}>
+                        <Text style={{fontFamily:FaNumBold,fontSize:12,color:"#ffffff",flex:1,textAlign:'center'}}>
                             100
                         </Text>
                         </View>

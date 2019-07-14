@@ -22,7 +22,8 @@ export default class Competition extends  Component {
         this.state = {
             answeredQuestions :0,
             phoneNumber:"",
-            token:""
+            token:"",
+            getAnsweredRetryCount:0
         };
         this.getData();
         this.getAnsweredQuestions()
@@ -43,9 +44,20 @@ export default class Competition extends  Component {
                 answeredQuestions :answered_questions
             })
         }).catch( error => {
-            hideSpinner();
-            showError("noConnection");
-            setTimeout( ()=> hideError(),3500);
+            const {getAnsweredRetryCount} = this.state;
+            console.log(getAnsweredRetryCount);
+            if(getAnsweredRetryCount+1<3){
+                this.setState({getAnsweredRetryCount :getAnsweredRetryCount+1},
+                    ()=>{
+                    this.getAnsweredQuestions()
+                })
+            }else {
+                this.setState({getAnsweredRetryCount:0},
+                    ()=>{
+                   // showError("noConnection");
+                    setTimeout( ()=> hideError(),3500);
+                })
+            }
         })
     };
     getData = async () => {
@@ -70,6 +82,41 @@ export default class Competition extends  Component {
             </View>
         )
     }
+    getVideo (){
+        axios.defaults.timeout = 5*1000;
+        axios({
+            method: "GET",
+            url:"http://193.176.243.56/api/get_video",
+            headers: {
+                "Authorization":this.state.token,
+                "Content-Type": "application/json"
+            }
+        }).then( response => {
+            hideSpinner();
+            const {data} = response;
+            Navigation.push("competitionStack",{
+                component:{
+                    id:"PreparationPhase",
+                    name:"PreparationPhase",
+                    options:{
+                        layout:{
+                            orientation:['portrait']
+                        },
+                        bottomTabs: { visible: false, drawBehind: true, animate: true }
+                    },
+                    passProps :{
+                        data:data,
+                        token :credentials["token"],
+                        phoneNumber:credentials["phoneNumber"]
+                    }
+                }
+            });
+        }).catch( error =>{
+            hideSpinner();
+            showError("noConnection");
+            setTimeout( ()=> hideError(),3500);
+        })
+    }
     onPressStart(){
         //Prepare questions api
         showSpinner();
@@ -82,11 +129,11 @@ export default class Competition extends  Component {
                 "Content-Type": "application/json"
             }
         }).then( response => {
-            hideSpinner();
             const {data : {status}} = response;
             switch (status) {
                 //user answered all his/her questions
                 case "111" :
+                    hideSpinner();
                     Navigation.push("competitionStack",{
                         component:{
                             id:"ScorePhase",
@@ -102,42 +149,12 @@ export default class Competition extends  Component {
                     break;
                 //questions already assigned
                 case "112":
-                    Navigation.push("competitionStack",{
-                        component:{
-                            id:"PrestartPhase",
-                            name:"PrestartPhase",
-                            options:{
-                                layout:{
-                                    orientation:['portrait']
-                                },
-                                bottomTabs: { visible: false, drawBehind: true, animate: true }
-                            },
-                            passProps :{
-                                token :credentials["token"],
-                                phoneNumber:credentials["phoneNumber"]
-                            }
-                        }
-                    });
+                    this.getVideo();
                     break;
                 //‫‪‫ all 10 questions are ready
                 case "200" :
-                    Navigation.push("competitionStack",{
-                        component:{
-                            id:"PrestartPhase",
-                            name:"PrestartPhase",
-                            options:{
-                                layout:{
-                                    orientation:['portrait']
-                                },
-                                bottomTabs: { visible: false, drawBehind: true, animate: true }
-                            },
-                            passProps :{
-                                token :credentials["token"],
-                                phoneNumber:credentials["phoneNumber"]
-                            }
-                        }
-                    });
-                    break;
+                    this.getVideo();
+                    break
             }
         }).catch( error =>{
             hideSpinner();

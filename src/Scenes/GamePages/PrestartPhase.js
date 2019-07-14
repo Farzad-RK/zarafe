@@ -2,18 +2,20 @@ import React,{Component} from "react"
 import {Text, View,Easing} from "react-native"
 import {FaNum, Regular, WIDTH} from "../../Data";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import {getPersianNumber} from "../../Helper";
+
 export default  class PrestartPhase extends Component{
     constructor(props) {
         super(props);
         this.timerDuration = 3000;
         this.intervalId=null;
         this.state = {
-            elapsedTime:3
+            elapsedTime:3,
         };
     }
     componentDidMount(){
         this.intervalId = setInterval(()=>{
-            let elapsedTime=this.state.elapsedTime-1
+            let elapsedTime=this.state.elapsedTime-1;
             if(elapsedTime===0){
                 clearInterval(this.intervalId)
                 //start the game
@@ -26,6 +28,8 @@ export default  class PrestartPhase extends Component{
         },1000)
     }
     render() {
+        const { data : { current_question_number } } = this.props;
+        const currentQuestion = "سوال " + getPersianNumber((current_question_number+1));
         return (
          <View style={{flex:1}}>
              <View style={{
@@ -39,7 +43,7 @@ export default  class PrestartPhase extends Component{
                      color:"#fff",
                      fontSize:18,
                      textAlignVertical:"center"}}>
-                     سوال اول
+                     {currentQuestion}
                  </Text>
              </View>
              <View style={{flex:9,alignItems:"center",justifyContent:"center",backgroundColor:"#2b2d5d"}}>

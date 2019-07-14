@@ -1,6 +1,6 @@
 import React,{Component} from "react"
 import {View, Text, ImageBackground} from "react-native"
-import {FaNum, HEIGHT, Regular, WIDTH} from "../Data";
+import {FaNum, FaNumBold, HEIGHT, Regular, WIDTH} from "../Data";
 import normalMedal from "../../assets/img/normal-medal.png";
 import Svg, {ClipPath, Defs, Path, Use,Image} from "react-native-svg";
 
@@ -26,26 +26,34 @@ export default class LeaderBoardRow extends Component{
                 backgroundColor:"#373866",
                 alignSelf:"center",
                 flexDirection:"row",
-                height:HEIGHT/12}}>
-                <View style={{flex:1.5,alignItems:'center',justifyContent:'center'}}>
-                    <View style={{width:"100%",height:"85%"}}>
+                height:HEIGHT/10}}>
+                <View style={{flex:1.2,alignItems:'center',justifyContent:'center'}}>
+                    <View style={{width:"100%",height:"90%"}}>
                         <ImageBackground resizeMode="contain" source={normalMedal} style={{flex:1}}>
                             <View
-                                style={{width:'100%',height:WIDTH/20,marginTop:WIDTH/30}}>
-                                <Text style={{fontFamily:FaNum,fontSize:10,color:"#a06f06",flex:1,textAlign:'center'}}>
-                                    100
+                                style={{width:'100%',height:WIDTH/20,marginTop:WIDTH/8.5}}>
+                                <Text style={{fontFamily:FaNumBold,fontSize:12,color:"#ffffff",flex:1,textAlign:'center'}}>
+                                    {this.props.rank}
                                 </Text>
                             </View>
                         </ImageBackground>
                     </View>
                 </View>
-                <View style={{flex:2}}>
-                    <Text style={{textAlign:'center',flex:1,color:"#fff",textAlignVertical:"center",fontFamily:Regular}}>
-                        {this.props.name}
-                    </Text>
-                    <Text style={{textAlign:'center',flex:1,color:"#c7c6ce",textAlignVertical:"center",fontFamily:FaNum}}>
-                        {this.props.phoneNumber}
-                    </Text>
+                <View style={{flex:2,justifyContent:"center"}}>
+                    <View style={{width:"100%",height:"85%"}}>
+                        <View style={{flex:1,flexDirection:"row"}}>
+                            <Text style={{flex:1,fontFamily:Regular,textAlign:"right",fontSize:10,color:"#ffffff"}}>{this.props.username}</Text>
+                            <Text style={{flex:1,fontFamily:Regular,fontSize:10,color:"#ffffff"}}>نام کاربری:</Text>
+                        </View>
+                        <View style={{flex:1,flexDirection:"row"}}>
+                            <Text style={{flex:1,fontFamily:FaNumBold,textAlign:"right",fontSize:10,color:"#ffffff"}}>{this.props.phoneNumber}</Text>
+                            <Text style={{flex:1,fontFamily:Regular,fontSize:10,color:"#ffffff"}}>شماره تماس:</Text>
+                        </View>
+                        <View style={{flex:1,flexDirection:"row"}}>
+                            <Text style={{flex:1,fontFamily:FaNumBold,textAlign:"right",fontSize:10,color:"#ffffff"}}>{this.props.score}</Text>
+                            <Text style={{flex:1,fontFamily:Regular,fontSize:10,color:"#ffffff"}}>امتیاز:</Text>
+                        </View>
+                    </View>
                 </View>
                 <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
                     <View style={{width:'120%',marginLeft:WIDTH/10,height:'120%'}}>
