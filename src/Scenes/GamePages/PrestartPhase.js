@@ -1,8 +1,9 @@
 import React,{Component} from "react"
-import {Text, View,Easing} from "react-native"
+import {Text, View,Easing,BackHandler} from "react-native"
 import {FaNum, Regular, WIDTH} from "../../Data";
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import {getPersianNumber} from "../../Helper";
+import {Navigation} from "react-native-navigation";
 
 export default  class PrestartPhase extends Component{
     constructor(props) {
@@ -12,12 +13,38 @@ export default  class PrestartPhase extends Component{
         this.state = {
             elapsedTime:3,
         };
+        this.handleBack = this.handleBack.bind(this)
+
     }
-    componentDidMount(){
+    handleBack()
+    {
+        return true
+    }
+    componentDidMount()
+    {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBack);
         this.intervalId = setInterval(()=>{
             let elapsedTime=this.state.elapsedTime-1;
             if(elapsedTime===0){
                 clearInterval(this.intervalId)
+                // Navigation.pop("PrestartPhase")
+                Navigation.push("competitionStack",{
+                    component:{
+                        id:"VideoScene",
+                        name:"VideoScene",
+                        options:{
+                            layout:{
+                                orientation:['portrait','landscape']
+                            },
+                            bottomTabs: { visible: false, drawBehind: true, animate: true }
+                        },
+                        passProps : {
+                            token:this.props.token,
+                            phoneNumber:this.props.phoneNumber,
+                            data:this.props.data
+                        }
+                    }
+                })
                 //start the game
             }else{
                 this.setState({
@@ -27,7 +54,8 @@ export default  class PrestartPhase extends Component{
 
         },1000)
     }
-    render() {
+    render()
+    {
         const { data : { current_question_number } } = this.props;
         const currentQuestion = "سوال " + getPersianNumber((current_question_number+1));
         return (
@@ -72,5 +100,8 @@ export default  class PrestartPhase extends Component{
          </View>
         );
     }
-
+    componentWillUnmount()
+    {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
+    }
 }

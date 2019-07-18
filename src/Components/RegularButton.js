@@ -8,7 +8,7 @@ export default class RegularButton extends Component {
     render(){
         if(this.props.dis){
             return(
-                <TouchableOpacity disable style={[styles.button,this.props.style,{backgroundColor:'#b2bec3'}]} onPress={this.props.onPress}>
+                <TouchableOpacity disabled={true} style={[styles.button,this.props.style]} onPress={this.props.onPress}>
                     <Text style={[styles.title,this.props.textStyle]}>{this.props.title}</Text>
                 </TouchableOpacity>
             )

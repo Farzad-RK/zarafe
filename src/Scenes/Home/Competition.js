@@ -1,5 +1,5 @@
 import React,{Component} from "react"
-import {View,Image,ImageBackground,Text,TouchableOpacity} from "react-native"
+import {View,Image,ImageBackground,Text,TouchableOpacity,ToastAndroid} from "react-native"
 import TopBar from "../../Components/TopBar"
 import UserRow from "../../Components/UserRow"
 import { FaNum, HEIGHT, Regular, WIDTH} from "../../Data"
@@ -55,7 +55,8 @@ export default class Competition extends  Component {
                 this.setState({getAnsweredRetryCount:0},
                     ()=>{
                    // showError("noConnection");
-                    setTimeout( ()=> hideError(),3500);
+                  //  setTimeout( ()=> hideError(),3500);
+                  ToastAndroid.show("مشکل در دسترسی به اینترنت",ToastAndroid.LONG)
                 })
             }
         })
@@ -77,10 +78,20 @@ export default class Competition extends  Component {
     };
     progressBar(){
         let percentage = (this.state.answeredQuestions*10)+"%";
-        return(
-            <View style={{position:"absolute",borderTopLeftRadius:15,borderBottomLeftRadius:15,backgroundColor:"#36b601",width:percentage,height:"100%"}}>
-            </View>
-        )
+        if(percentage==="100%")
+        {
+            return(
+                <View style={{position:"absolute",borderRadius:15,backgroundColor:"#36b601",width:percentage,height:"100%"}}>
+                </View>
+            )
+        }
+        else
+        {
+            return(
+                <View style={{position:"absolute",borderTopLeftRadius:15,borderBottomLeftRadius:15,backgroundColor:"#36b601",width:percentage,height:"100%"}}>
+                </View>
+            )
+        }
     }
     getVideo (){
         axios.defaults.timeout = 5*1000;
@@ -110,7 +121,7 @@ export default class Competition extends  Component {
                         phoneNumber:credentials["phoneNumber"]
                     }
                 }
-            });
+            })
         }).catch( error =>{
             hideSpinner();
             showError("noConnection");
@@ -143,6 +154,10 @@ export default class Competition extends  Component {
                                     orientation:['portrait']
                                 },
                                 bottomTabs: { visible: false, drawBehind: true, animate: true }
+                            },
+                            passProps :{
+                                token :credentials["token"],
+                                phoneNumber:credentials["phoneNumber"]
                             }
                         }
                     });

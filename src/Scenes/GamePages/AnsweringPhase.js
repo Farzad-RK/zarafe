@@ -1,20 +1,46 @@
 import React,{Component} from "react"
-import {Text, View,Animated,Easing} from "react-native"
+import {Text, View,Animated,Easing,ToastAndroid} from "react-native"
 import {FaNum, Regular, WIDTH} from "../../Data";
+import axios from "axios"
 import QuestionScore from "../../Components/QuestionScore";
 import RegularButton from "../../Components/RegularButton";
+
+const wrongColor = "#c2272d";
+const correctColor = "#4ab74a";
+const numberOfRetries = 3;
 export default class AnsweringPhase extends Component{
     constructor(props) {
         super(props);
-        this.intervalId=null
-        this.progress= new Animated.Value(0)
+        this.intervalId=null;
+        this.progress= new Animated.Value(0);
         this.state = {
             elapsedTime:10,
+            option1: {
+                backgroundColor:"#d6d4df",
+                color:"#000"
+            },
+            option2: {
+                backgroundColor:"#d6d4df",
+                color:"#000"
+            },
+            option3: {
+                backgroundColor:"#d6d4df",
+                color:"#000"
+            },
+            option4: {
+                backgroundColor:"#d6d4df",
+                color:"#000"
+            },
+            stars:"normal",
+            disableButtons:false,
             progressBarColor:"#21c701"
-        }
+        };
+        this.onSelectOption = this.onSelectOption.bind(this);
+        this.handleOptions = this.handleOptions.bind(this);
+        this.sendAnswer = this.sendAnswer.bind(this);
     }
     progressBar(){
-        this.progress.setValue(0)
+        this.progress.setValue(0);
         Animated.timing(
             this.progress,
             {
@@ -29,19 +55,25 @@ export default class AnsweringPhase extends Component{
             let elapsedTime=this.state.elapsedTime-1
             if(elapsedTime===0){
                 clearInterval(this.intervalId)
-                //start the game
+                this.setState({
+                    elapsedTime:0,
+                    disableButtons:true
+                    })
             }else {
-                if (elapsedTime > 5){
+                if (elapsedTime > 5)
+                {
                     this.setState({
                         elapsedTime: elapsedTime,
                         progressBarColor: "#21c701"
                     });
-                }else if(elapsedTime<=5&&elapsedTime>=3){
+                }else if(elapsedTime<=5&&elapsedTime>=3)
+                {
                     this.setState({
                         elapsedTime:elapsedTime,
                         progressBarColor:"#f8931f"
                     });
-                }else if(elapsedTime<3){
+                }else if(elapsedTime<3)
+                {
                     this.setState({
                         elapsedTime:elapsedTime,
                         progressBarColor:"#c2272d"
@@ -53,12 +85,167 @@ export default class AnsweringPhase extends Component{
     }
     componentDidMount(){
         this.progressBar()
+        ToastAndroid.show(this.props.data.current_question_number,ToastAndroid.LONG)
     }
-    render(){
+    onSelectOption(index)
+    {
+        //stops the timer and animation
+        clearInterval(this.intervalId);
+        this.setState({
+            disableButtons:true
+        });
+        this.progress.stopAnimation();
+
+        //sending the request
+        this.sendAnswer(index,numberOfRetries)
+    }
+    sendAnswer(index,n)
+    {
+        const {token,data:{question_id}} = this.props;
+        axios.defaults.timeout = 1.5*1000;
+        axios.get("http://193.176.243.56/api/send_answer",{
+            params:{
+                answer:index,
+                question_id:question_id,
+            },
+            headers: {
+                "Authorization": token,
+                "Content-Type": "application/json"
+            }}).then(response =>{
+            console.log(response);
+            const { data :{status,correct_answer}} = response;
+            switch (status) {
+                //timeout - it's late
+                case "117":
+                    ToastAndroid.show("پاسخ شما دیر ارسال شد",ToastAndroid.LONG);
+                    //take action
+                    break;
+                //correct answer
+                case "118":
+                    //take action
+                    this.handleOptions(index,correct_answer);
+                    break;
+                //wrong answer
+                case "119":
+                    //take action
+                    this.handleOptions(index,correct_answer);
+                    break;
+            }
+        }).catch(error =>{
+            if(n===0)
+            {
+                ToastAndroid.show("مشکل در ارسال پاسخ",ToastAndroid.LONG)
+            }
+            else
+            {
+                this.sendAnswer(index,n-1);
+            }
+        })
+    }
+    handleOptions(userAnswer,correctAnswer)
+    {
+        userAnswer = parseInt(userAnswer);
+        switch (correctAnswer) {
+            case 1:
+                this.setState({
+                    option1: {
+                        backgroundColor:correctColor,
+                        color:"#fff"
+                    },
+                });
+                break;
+            case 2:
+                this.setState({
+                    option2: {
+                        backgroundColor:correctColor,
+                        color:"#fff"
+                    },
+                });
+                break;
+            case 3:
+                this.setState({
+                    option3: {
+                        backgroundColor:correctColor,
+                        color:"#fff"
+                    },
+                });
+                break;
+            case 4:
+                this.setState({
+                    option4: {
+                        backgroundColor:correctColor,
+                        color:"#fff"
+                    },
+                });
+                break;
+        }
+        if(userAnswer!==correctAnswer)
+        {
+            switch (userAnswer) {
+                case 1:
+                    this.setState({
+                        option1: {
+                            backgroundColor:wrongColor,
+                            color:"#fff",
+                        },
+                        stars:"wrong"
+                    });
+                    break;
+                case 2:
+                    this.setState({
+                        option2: {
+                            backgroundColor:wrongColor,
+                            color:"#fff",
+                        },
+                        stars:"wrong"
+                    });
+                    break;
+                case 3:
+                    this.setState({
+                        option3: {
+                            backgroundColor:wrongColor,
+                            color:"#fff",
+                        },
+                        stars:"wrong"
+                    });
+                    break;
+                case 4:
+                    this.setState({
+                        option4: {
+                            backgroundColor:wrongColor,
+                            color:"#fff",
+                        },
+                        stars:"wrong"
+                    });
+                    break;
+            }
+        }
+        else
+        {
+            this.setState({
+                stars :"correct"
+            })
+        }
+    }
+    render()
+    {
         const progress = this.progress.interpolate({
             inputRange: [0, 1],
             outputRange: ['100%', '0%']
         })
+        const {data :{ text ,option1,option2,option3,option4,level}} = this.props;
+        let stars;
+        switch (level) {
+            case "A" :
+                stars =3;
+                break;
+            case "B" :
+                stars =2;
+                break;
+            case "C" :
+                stars =1;
+                break;
+        }
         return(
                 <View style={{flex:1}}>
                     <View style={{
@@ -92,18 +279,18 @@ export default class AnsweringPhase extends Component{
                         </View>
                         <View style={{flex:19,backgroundColor:"#2b2d5d"}}>
                             <View style={{flex:1,justifyContent:"center",alignItems:"center"}}>
-                               <QuestionScore type="normal" score="3"/>
+                               <QuestionScore type={this.state.stars} score={stars}/>
                             </View>
                             <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
                                 <Text style={{fontFamily:Regular,color:"#fff",fontSize:16,textAlign:"center",textAlignVertical:"center",flex:1}}>
-                                   این یک سوال است؟
+                                    {text}
                                 </Text>
                             </View>
                             <View style={{flex:4,alignItems:"center"}}>
-                                <RegularButton textStyle={{color:"#000"}} title="جواب" style={{backgroundColor:"#d6d4df",width:"80%",marginTop:"5%"}}/>
-                                <RegularButton textStyle={{color:"#000"}} title="جواب" style={{backgroundColor:"#d6d4df",width:"80%",marginTop:"5%"}}/>
-                                <RegularButton textStyle={{color:"#000"}} title="جواب" style={{backgroundColor:"#d6d4df",width:"80%",marginTop:"5%"}}/>
-                                <RegularButton textStyle={{color:"#000"}} title="جواب" style={{backgroundColor:"#d6d4df",width:"80%",marginTop:"5%"}}/>
+                                <RegularButton dis={this.state.disableButtons} onPress={() => this.onSelectOption("1") } textStyle={{color:this.state.option1.color}} title={option1} style={{backgroundColor:this.state.option1.backgroundColor,width:"80%",marginTop:"5%"}}/>
+                                <RegularButton dis={this.state.disableButtons} onPress={() => this.onSelectOption("2") } textStyle={{color:this.state.option2.color}} title={option2} style={{backgroundColor:this.state.option2.backgroundColor,width:"80%",marginTop:"5%"}}/>
+                                <RegularButton dis={this.state.disableButtons} onPress={() => this.onSelectOption("3") } textStyle={{color:this.state.option3.color}} title={option3} style={{backgroundColor:this.state.option3.backgroundColor,width:"80%",marginTop:"5%"}}/>
+                                <RegularButton dis={this.state.disableButtons} onPress={() => this.onSelectOption("4") } textStyle={{color:this.state.option4.color}} title={option4} style={{backgroundColor:this.state.option4.backgroundColor,width:"80%",marginTop:"5%"}}/>
                             </View>
                         </View>
                     </View>

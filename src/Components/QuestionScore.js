@@ -20,7 +20,7 @@ export default class QuestionScore extends Component{
                         <SmallStarNormal  style={{marginRight:WIDTH/20,flex:1,height:"50%"}}/>
                     </View>
                 );
-            case "success":
+            case "correct":
                 return(
                     <View style={{flexDirection:"row",backgroundColor:"#4ab74a",alignItems:"center",justifyContent:"center",borderRadius:30,width:WIDTH*0.27,height:WIDTH*0.12}}>
                         <Text style={{marginLeft:WIDTH/20,textAlign:"center",textAlignVertical:"center",marginTop:WIDTH/55,flex:1,fontFamily:FaNum,color:"#ffffff",fontSize:20}}>
@@ -28,8 +28,8 @@ export default class QuestionScore extends Component{
                         </Text>
                         <SmallStar  style={{marginRight:WIDTH/20,flex:1,height:"50%"}}/>
                     </View>
-                )
-            case "failure":
+                );
+            case "wrong":
                 return(
                     <View style={{flexDirection:"row",backgroundColor:"#c2272d",alignItems:"center",justifyContent:"center",borderRadius:30,width:WIDTH*0.27,height:WIDTH*0.12}}>
                         <Text style={{marginLeft:WIDTH/20,textAlign:"center",textAlignVertical:"center",marginTop:WIDTH/55,flex:1,fontFamily:FaNum,color:"#ffffff",fontSize:20}}>

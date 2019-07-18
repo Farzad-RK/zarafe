@@ -1,5 +1,5 @@
 import React,{Component} from "react"
-import {View,Text,Image,ImageBackground,TouchableOpacity} from "react-native"
+import {View,ToastAndroid,Text,Image,ImageBackground,TouchableOpacity} from "react-native"
 import StartButton from "../../../assets/img/startButton.png"
 import RegularButton from "../../Components/RegularButton"
 import Camera from "../../../assets/img/camera.png"
@@ -15,7 +15,13 @@ export default class PreparationPhase extends Component {
         this.onPressStart = this.onPressStart.bind(this)
 
     }
-    onPressStart(){
+    componentDidMount()
+    {
+
+    }
+    onPressStart()
+    {
+        // Navigation.pop("PreparationPhase")
         Navigation.push("competitionStack",{
             component:{
                 id:"PrestartPhase",
@@ -23,7 +29,8 @@ export default class PreparationPhase extends Component {
                 options:{
                     layout:{
                         orientation:['portrait']
-                    }
+                    },
+                    bottomTabs: { visible: false, drawBehind: true, animate: true }
                 },
                 passProps : {
                     token:this.props.token,

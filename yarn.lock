@@ -3564,6 +3564,10 @@ jsx-ast-utils@^2.0.1:
   dependencies:
     array-includes "^3.0.3"
 
+keymirror@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/keymirror/-/keymirror-0.1.1.tgz#918889ea13f8d0a42e7c557250eee713adc95c35"
+
 kind-of@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/kind-of/-/kind-of-1.1.0.tgz#140a3d2d41a36d2efcfa9377b62c24f8495a5c44"
@@ -4833,6 +4837,10 @@ react-native-navigation@^2.16.0:
     react-lifecycles-compat "2.0.0"
     tslib "1.9.3"
 
+react-native-orientation@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-orientation/-/react-native-orientation-3.1.3.tgz#d45803841fe94b6cce9acbe904fd5ca191a3711e"
+
 react-native-svg-transformer@^0.12.1:
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/react-native-svg-transformer/-/react-native-svg-transformer-0.12.1.tgz#9546b65f5829e9f85c2951186a67e72e9a4c79ab"
@@ -4843,6 +4851,14 @@ react-native-svg-transformer@^0.12.1:
 react-native-svg@^9.3.7:
   version "9.3.7"
   resolved "https://registry.yarnpkg.com/react-native-svg/-/react-native-svg-9.3.7.tgz#00f72f6105177e93bf0cb56bd0d1339db9b6649f"
+
+react-native-video@^4.4.4:
+  version "4.4.4"
+  resolved "https://registry.yarnpkg.com/react-native-video/-/react-native-video-4.4.4.tgz#e33da29990556a9b2d575d6b2e88190fc04d9b50"
+  dependencies:
+    keymirror "^0.1.1"
+    prop-types "^15.5.10"
+    shaka-player "^2.4.4"
 
 react-native@0.59.2:
   version "0.59.2"
@@ -5324,6 +5340,10 @@ setimmediate@^1.0.5:
 setprototypeof@1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/setprototypeof/-/setprototypeof-1.1.0.tgz#d0bd85536887b6fe7c0d818cb962d9d91c54e656"
+
+shaka-player@^2.4.4:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/shaka-player/-/shaka-player-2.5.3.tgz#f32f47024a6aed3dd66d8098e08b1a16546f3683"
 
 shebang-command@^1.2.0:
   version "1.2.0"

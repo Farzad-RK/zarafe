@@ -13,11 +13,13 @@ import ScorePhase from "./Scenes/GamePages/ScorePhase"
 import ErrorOverlay from "./Components/ErrorOverlay";
 import SpinnerOverlay from "./Components/SpinnerOverlay";
 import Settings from "./Scenes/SideScenes/Settings";
+import VideoScene from "./Scenes/GamePages/VideoScene";
 
 export const  RegisterScenes = () =>{
 
     Navigation.registerComponent( `Root`, () => Root);
     Navigation.registerComponent( `ErrorOverlay` , () => ErrorOverlay)
+    Navigation.registerComponent( `VideoScene` , () => VideoScene)
     Navigation.registerComponent( `Settings` , () => Settings)
     Navigation.registerComponent( `SpinnerOverlay` , () => SpinnerOverlay)
     Navigation.registerComponent( `AnsweringPhase`, () => AnsweringPhase);

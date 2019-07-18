@@ -21,6 +21,9 @@ import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import java.util.Arrays;
 import java.util.List;
 
+//Video Player
+import com.brentvatne.react.ReactVideoPackage;
+
 
     public class MainApplication extends NavigationApplication {
 
@@ -46,7 +49,8 @@ import java.util.List;
             return Arrays.<ReactPackage>asList(
                 // eg. new VectorIconsPackage(),
                 new SvgPackage(),
-                new AsyncStoragePackage()
+                new AsyncStoragePackage(),
+                new ReactVideoPackage()
             );
         }
 
