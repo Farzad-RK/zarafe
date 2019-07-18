@@ -14,10 +14,12 @@ import ErrorOverlay from "./Components/ErrorOverlay";
 import SpinnerOverlay from "./Components/SpinnerOverlay";
 import Settings from "./Scenes/SideScenes/Settings";
 import VideoScene from "./Scenes/GamePages/VideoScene";
+import BackgroundScreen from "./Scenes/GamePages/BackgroundScreen";
 
 export const  RegisterScenes = () =>{
 
     Navigation.registerComponent( `Root`, () => Root);
+    Navigation.registerComponent( `BackgroundScreen`, () => BackgroundScreen);
     Navigation.registerComponent( `ErrorOverlay` , () => ErrorOverlay)
     Navigation.registerComponent( `VideoScene` , () => VideoScene)
     Navigation.registerComponent( `Settings` , () => Settings)

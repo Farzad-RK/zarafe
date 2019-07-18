@@ -1,9 +1,11 @@
 import React,{Component} from "react"
 import {Text, View,Animated,Easing,ToastAndroid} from "react-native"
 import {FaNum, Regular, WIDTH} from "../../Data";
+import {Navigation} from "react-native-navigation";
 import axios from "axios"
 import QuestionScore from "../../Components/QuestionScore";
 import RegularButton from "../../Components/RegularButton";
+import credentials from "../../testCredentials";
 
 const wrongColor = "#c2272d";
 const correctColor = "#4ab74a";
@@ -38,7 +40,9 @@ export default class AnsweringPhase extends Component{
         this.onSelectOption = this.onSelectOption.bind(this);
         this.handleOptions = this.handleOptions.bind(this);
         this.sendAnswer = this.sendAnswer.bind(this);
+        this.handleTheEnd = this.handleTheEnd.bind(this)
     }
+
     progressBar(){
         this.progress.setValue(0);
         Animated.timing(
@@ -59,6 +63,8 @@ export default class AnsweringPhase extends Component{
                     elapsedTime:0,
                     disableButtons:true
                     })
+                this.handleTheEnd();
+                ToastAndroid.show("سوال بدون پاسخ ماند",ToastAndroid.LONG)
             }else {
                 if (elapsedTime > 5)
                 {
@@ -85,7 +91,7 @@ export default class AnsweringPhase extends Component{
     }
     componentDidMount(){
         this.progressBar()
-        ToastAndroid.show(this.props.data.current_question_number,ToastAndroid.LONG)
+        this.props.updateMainPage()
     }
     onSelectOption(index)
     {
@@ -226,6 +232,7 @@ export default class AnsweringPhase extends Component{
                 stars :"correct"
             })
         }
+        this.handleTheEnd()
     }
     render()
     {
@@ -296,6 +303,64 @@ export default class AnsweringPhase extends Component{
                     </View>
                 </View>
         )
+    }
+    handleTheEnd()
+    {
+        if(this.props.data.current_question_number<10)
+        {
+            setTimeout(
+                ()=>{
+                    Navigation.pop("AnsweringPhase").then(
+                        ()=>{
+                            Navigation.push("competitionStack",{
+                                component:{
+                                    id:"PreparationPhase",
+                                    name:"PreparationPhase",
+                                    options:{
+                                        layout:{
+                                            orientation:['portrait']
+                                        },
+                                        bottomTabs: { visible: false, drawBehind: true, animate: true }
+                                    },
+                                    passProps :{
+                                        token :this.props.token,
+                                        updateMainPage:this.props.updateMainPage,
+                                        phoneNumber:this.props.phoneNumber,
+                                    }
+                                }
+                            })
+                        }
+                    )
+                }
+                ,2000)
+        }
+        else
+        {
+            setTimeout(
+                ()=>{
+                    Navigation.pop("AnsweringPhase").then(
+                        ()=>{
+                            Navigation.push("competitionStack",{
+                                component:{
+                                    id:"ScorePhase",
+                                    name:"ScorePhase",
+                                    options:{
+                                        layout:{
+                                            orientation:['portrait']
+                                        },
+                                        bottomTabs: { visible: false, drawBehind: true, animate: true }
+                                    },
+                                    passProps :{
+                                        phoneNumber:this.props.phoneNumber,
+                                        token :this.props.token,
+                                    }
+                                }
+                            });
+                        }
+                    )
+                }
+                ,2000)
+        }
     }
 }
 

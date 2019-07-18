@@ -57,28 +57,32 @@ export default class VideoScene extends Component{
             }})
             .then(response =>{
                 const {data} = response
-                // Navigation.pop("VideoScene")
-                Navigation.push("competitionStack",{
-                    component:{
-                        id:"AnsweringPhase",
-                        name:"AnsweringPhase",
-                        options:{
-                            layout:{
-                                orientation:['portrait','landscape']
-                            },
-                            bottomTabs: { visible: false, drawBehind: true, animate: true }
-                        },
-                        passProps : {
-                            token:this.props.token,
-                            phoneNumber:this.props.phoneNumber,
-                            data:{ ...data,question_id:question_id}
-                        }
-                    }
-                })
-            })
-            .catch( error=>{
-                ToastAndroid.show("عدم دسترسی به اینترنت",ToastAndroid.LONG)
-            })
+                Navigation.pop("VideoScene").then(
+                    ()=>{
+                        Navigation.push("competitionStack",{
+                            component:{
+                                id:"AnsweringPhase",
+                                name:"AnsweringPhase",
+                                options:{
+                                    layout:{
+                                        orientation:['portrait','landscape']
+                                    },
+                                    bottomTabs: { visible: false, drawBehind: true, animate: true }
+                                },
+                                passProps : {
+                                    token:this.props.token,
+                                    phoneNumber:this.props.phoneNumber,
+                                    updateMainPage:this.props.updateMainPage,
+                                    data:{ ...data,question_id:question_id}
+                                }
+                            }
+                        })
+                    })
+                    .catch( error=>{
+                        ToastAndroid.show("عدم دسترسی به اینترنت",ToastAndroid.LONG)
+                    })
+                   }
+                )
     }
     render()
     {

@@ -48,6 +48,16 @@ export const goToAuth = () => {
 
 export const goToHome = (currentIndex)=>{
     Navigation.setDefaultOptions({
+        animations:{
+            animations: {
+                push: {
+                    waitForRender: true
+                },
+                showModal:{
+                    waitForRender: true
+                }
+            },
+        },
         topBar: {
             visible: false,
             drawBehind: true,

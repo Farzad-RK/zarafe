@@ -29,6 +29,7 @@ export default class Competition extends  Component {
         this.getAnsweredQuestions()
     }
 
+    //this function is passed through the game pages to get updated
     getAnsweredQuestions = () => {
         axios.defaults.timeout = 5*1000;
         axios({
@@ -93,41 +94,6 @@ export default class Competition extends  Component {
             )
         }
     }
-    getVideo (){
-        axios.defaults.timeout = 5*1000;
-        axios({
-            method: "GET",
-            url:"http://193.176.243.56/api/get_video",
-            headers: {
-                "Authorization":this.state.token,
-                "Content-Type": "application/json"
-            }
-        }).then( response => {
-            hideSpinner();
-            const {data} = response;
-            Navigation.push("competitionStack",{
-                component:{
-                    id:"PreparationPhase",
-                    name:"PreparationPhase",
-                    options:{
-                        layout:{
-                            orientation:['portrait']
-                        },
-                        bottomTabs: { visible: false, drawBehind: true, animate: true }
-                    },
-                    passProps :{
-                        data:data,
-                        token :credentials["token"],
-                        phoneNumber:credentials["phoneNumber"]
-                    }
-                }
-            })
-        }).catch( error =>{
-            hideSpinner();
-            showError("noConnection");
-            setTimeout( ()=> hideError(),3500);
-        })
-    }
     onPressStart(){
         //Prepare questions api
         showSpinner();
@@ -164,17 +130,82 @@ export default class Competition extends  Component {
                     break;
                 //questions already assigned
                 case "112":
-                    this.getVideo();
+                    hideSpinner();
+                    Navigation.push("competitionStack",{
+                        component:{
+                            id:"BackgroundScreen",
+                            name:"BackgroundScreen",
+                            options:{
+                                layout:{
+                                    orientation:['portrait']
+                                },
+                                bottomTabs: { visible: false, drawBehind: true, animate: true }
+                            }
+                        }
+                    }).then(
+                        ()=>{
+                            Navigation.push("competitionStack",{
+                                component:{
+                                    id:"PreparationPhase",
+                                    name:"PreparationPhase",
+                                    options:{
+                                        layout:{
+                                            orientation:['portrait']
+                                        },
+                                        bottomTabs: { visible: false, drawBehind: true, animate: true }
+                                    },
+                                    passProps :{
+                                        token :credentials["token"],
+                                        updateMainPage:this.getAnsweredQuestions,
+                                        phoneNumber:credentials["phoneNumber"]
+                                    }
+                                }
+                            })
+                        }
+                    )
                     break;
                 //‫‪‫ all 10 questions are ready
                 case "200" :
-                    this.getVideo();
+                    hideSpinner()
+                    Navigation.push("competitionStack",{
+                        component:{
+                            id:"BackgroundScreen",
+                            name:"BackgroundScreen",
+                            options:{
+                                layout:{
+                                    orientation:['portrait']
+                                },
+                                bottomTabs: { visible: false, drawBehind: true, animate: true }
+                            }
+                        }
+                    }).then(
+                        ()=>{
+                            Navigation.push("competitionStack",{
+                                component:{
+                                    id:"PreparationPhase",
+                                    name:"PreparationPhase",
+                                    options:{
+                                        layout:{
+                                            orientation:['portrait']
+                                        },
+                                        bottomTabs: { visible: false, drawBehind: true, animate: true }
+                                    },
+                                    passProps :{
+                                        token :credentials["token"],
+                                        updateMainPage:this.getAnsweredQuestions,
+                                        phoneNumber:credentials["phoneNumber"]
+                                    }
+                                }
+                            })
+                        }
+                    )
                     break
             }
         }).catch( error =>{
             hideSpinner();
-            showError("noConnection");
-            setTimeout( ()=> hideError(),3500);
+            // ToastAndroid.show("مشکل در دسترسی به اینترنت" ,ToastAndroid.LONG)
+            // showError("noConnection");
+            // setTimeout( ()=> hideError(),3500);
         })
     }
     render(){

@@ -27,24 +27,28 @@ export default  class PrestartPhase extends Component{
             let elapsedTime=this.state.elapsedTime-1;
             if(elapsedTime===0){
                 clearInterval(this.intervalId)
-                // Navigation.pop("PrestartPhase")
-                Navigation.push("competitionStack",{
-                    component:{
-                        id:"VideoScene",
-                        name:"VideoScene",
-                        options:{
-                            layout:{
-                                orientation:['portrait','landscape']
-                            },
-                            bottomTabs: { visible: false, drawBehind: true, animate: true }
-                        },
-                        passProps : {
-                            token:this.props.token,
-                            phoneNumber:this.props.phoneNumber,
-                            data:this.props.data
-                        }
+                Navigation.pop("PrestartPhase").then(
+                    ()=>{
+                        Navigation.push("competitionStack",{
+                            component:{
+                                id:"VideoScene",
+                                name:"VideoScene",
+                                options:{
+                                    layout:{
+                                        orientation:['portrait','landscape']
+                                    },
+                                    bottomTabs: { visible: false, drawBehind: true, animate: true }
+                                },
+                                passProps : {
+                                    token:this.props.token,
+                                    phoneNumber:this.props.phoneNumber,
+                                    updateMainPage:this.props.updateMainPage,
+                                    data:this.props.data
+                                }
+                            }
+                        })
                     }
-                })
+                )
                 //start the game
             }else{
                 this.setState({

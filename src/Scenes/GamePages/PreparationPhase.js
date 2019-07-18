@@ -6,46 +6,87 @@ import Camera from "../../../assets/img/camera.png"
 import {FaNum, FaNumBold, HEIGHT, Regular} from "../../Data"
 import {Navigation} from "react-native-navigation";
 import {getPersianNumber} from "../../Helper";
+import {hideError, hideSpinner, showError} from "../../Navigation";
+import credentials from "../../testCredentials";
+import axios from "axios"
 
 export default class PreparationPhase extends Component {
 
     constructor(props)
     {
         super(props)
-        this.onPressStart = this.onPressStart.bind(this)
-
+        this.onPressStart = this.onPressStart.bind(this);
+        this.getVideo = this.getVideo.bind(this);
+        this.getVideo();
+        this.state= {
+            data:null
+        }
+        this.dataBackup = null
     }
     componentDidMount()
     {
 
     }
+    getVideo (){
+        axios.defaults.timeout = 5*1000;
+        axios({
+            method: "GET",
+            url:"http://193.176.243.56/api/get_video",
+            headers: {
+                "Authorization":this.props.token,
+                "Content-Type": "application/json"
+            }
+        }).then( response => {
+            const {data} = response;
+            this.dataBackup = data;
+            this.setState({
+                data:data
+            })
+        }).catch( error =>{
+           ToastAndroid.show("مشکل در دسترسی به سرور")
+           Navigation.popTo("Competition")
+        })
+    }
     onPressStart()
     {
-        // Navigation.pop("PreparationPhase")
-        Navigation.push("competitionStack",{
-            component:{
-                id:"PrestartPhase",
-                name:"PrestartPhase",
-                options:{
-                    layout:{
-                        orientation:['portrait']
-                    },
-                    bottomTabs: { visible: false, drawBehind: true, animate: true }
-                },
-                passProps : {
-                    token:this.props.token,
-                    phoneNumber:this.props.phoneNumber,
-                    data:this.props.data
+        if(this.state.data!==null)
+        {
+            Navigation.pop("PreparationPhase").then(
+                ()=>{
+                    Navigation.push("competitionStack",{
+                        component:{
+                            id:"PrestartPhase",
+                            name:"PrestartPhase",
+                            options:{
+                                layout:{
+                                    orientation:['portrait']
+                                },
+                                bottomTabs: { visible: false, drawBehind: true, animate: true }
+                            },
+                            passProps : {
+                                token:this.props.token,
+                                phoneNumber:this.props.phoneNumber,
+                                updateMainPage:this.props.updateMainPage,
+                                data:this.dataBackup
+                            }
+                        }
+                    })
                 }
-            }
-        })
+            )
+        }
     }
     onPressCancel = () =>{
         Navigation.popTo("Competition")
     };
     render()
-    {   const { data : { current_question_number } } = this.props;
-        const currentQuestion = "سوال " + getPersianNumber((current_question_number+1));
+    {
+        let currentQuestion ="";
+        let current_question_number = 0;
+        if(this.state.data!==null)
+        {
+            current_question_number = this.state.data.current_question_number;
+            currentQuestion = "سوال " + getPersianNumber((current_question_number+1));
+        }
         return(
             <View style={{flex:1}}>
                 <View style={{

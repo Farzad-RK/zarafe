@@ -76,7 +76,7 @@ export default class ScorePhase extends Component{
                             <View style={{flex:1,alignItems:"center",justifyContent:"center",flexDirection:"row"}}>
                                 <Text style={{fontFamily:Regular,marginRight:WIDTH/40,fontSize:22,color:"#ffc871"}}>
                                    <Text style={{fontFamily:FaNum}}>
-                                       {"+" +this.state.tonight_score+" "}
+                                       {this.state.tonight_score+"+" +" "}
                                        </Text>
                                       امتیاز
                                 </Text>
