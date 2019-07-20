@@ -1,5 +1,5 @@
 import React,{Component} from "react"
-import {Text, View,Animated,Easing,ToastAndroid} from "react-native"
+import {Text, View, Animated, Easing, ToastAndroid, BackHandler} from "react-native"
 import {FaNum, Regular, WIDTH} from "../../Data";
 import {Navigation} from "react-native-navigation";
 import axios from "axios"
@@ -40,7 +40,8 @@ export default class AnsweringPhase extends Component{
         this.onSelectOption = this.onSelectOption.bind(this);
         this.handleOptions = this.handleOptions.bind(this);
         this.sendAnswer = this.sendAnswer.bind(this);
-        this.handleTheEnd = this.handleTheEnd.bind(this)
+        this.handleTheEnd = this.handleTheEnd.bind(this);
+        this.handleBack = this.handleBack.bind(this);
     }
 
     progressBar(){
@@ -92,6 +93,11 @@ export default class AnsweringPhase extends Component{
     componentDidMount(){
         this.progressBar()
         this.props.updateMainPage()
+        BackHandler.addEventListener('hardwareBackPress', this.handleBack);
+    }
+    handleBack()
+    {
+        return true
     }
     onSelectOption(index)
     {
@@ -317,6 +323,9 @@ export default class AnsweringPhase extends Component{
                                     id:"PreparationPhase",
                                     name:"PreparationPhase",
                                     options:{
+                                        topBar:{
+                                            visible:false
+                                        },
                                         layout:{
                                             orientation:['portrait']
                                         },
@@ -345,6 +354,9 @@ export default class AnsweringPhase extends Component{
                                     id:"ScorePhase",
                                     name:"ScorePhase",
                                     options:{
+                                        topBar:{
+                                            visible:false
+                                        },
                                         layout:{
                                             orientation:['portrait']
                                         },
@@ -361,6 +373,10 @@ export default class AnsweringPhase extends Component{
                 }
                 ,2000)
         }
+    }
+    componentWillUnmount()
+    {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
     }
 }
 

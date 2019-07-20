@@ -34,6 +34,9 @@ export default  class PrestartPhase extends Component{
                                 id:"VideoScene",
                                 name:"VideoScene",
                                 options:{
+                                    topBar:{
+                                        visible:false
+                                    },
                                     layout:{
                                         orientation:['portrait','landscape']
                                     },

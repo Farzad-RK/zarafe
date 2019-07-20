@@ -15,11 +15,13 @@ import SpinnerOverlay from "./Components/SpinnerOverlay";
 import Settings from "./Scenes/SideScenes/Settings";
 import VideoScene from "./Scenes/GamePages/VideoScene";
 import BackgroundScreen from "./Scenes/GamePages/BackgroundScreen";
+import TopBar from "./Components/TopBar";
 
 export const  RegisterScenes = () =>{
 
     Navigation.registerComponent( `Root`, () => Root);
     Navigation.registerComponent( `BackgroundScreen`, () => BackgroundScreen);
+    Navigation.registerComponent( `TopBar`, () => TopBar);
     Navigation.registerComponent( `ErrorOverlay` , () => ErrorOverlay)
     Navigation.registerComponent( `VideoScene` , () => VideoScene)
     Navigation.registerComponent( `Settings` , () => Settings)

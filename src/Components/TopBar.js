@@ -8,15 +8,18 @@ export default class TopBar extends  Component {
 
     constructor(props) {
         super(props);
+    }
+    componentDidMount()
+    {
 
     }
-
     render(){
+
         return(
             <View style={{
                 flexDirection:"row",
                 backgroundColor:"#373866",
-                height:HEIGHT/10}}>
+                height:HEIGHT/11}}>
                 <View style={{
                     flex:1,
                     justifyContent:'center',
@@ -25,14 +28,14 @@ export default class TopBar extends  Component {
                         backgroundColor:"#23224e",
                         borderRadius:16,
                         height:"35%",
-                        fontSize:13,
+                        fontSize:16,
                         color:"#fff",
                         fontFamily:FaNum,
-                        paddingLeft:5,
+                        paddingLeft:10,
                         textAlignVertical:'center',
                         marginRight:WIDTH/25,
                         width:"65%"}}>
-                        25000
+                        {this.totalScore}
                     </Text>
                     <Image
                         source={star}

@@ -1,5 +1,5 @@
 import React,{Component} from "react"
-import {View,Image,ImageBackground,Text,TouchableOpacity,ToastAndroid} from "react-native"
+import {View,Image,DeviceEventEmitter,ImageBackground,Text,TouchableOpacity,ToastAndroid} from "react-native"
 import TopBar from "../../Components/TopBar"
 import UserRow from "../../Components/UserRow"
 import { FaNum, HEIGHT, Regular, WIDTH} from "../../Data"
@@ -14,11 +14,13 @@ import axios from "axios"
 import AsyncStorage from '@react-native-community/async-storage';
 import {hideError, hideSpinner, showError, showSpinner} from "../../Navigation";
 import credentials from "../../testCredentials"
+
 export default class Competition extends  Component {
 
     constructor(props){
         super(props)
         this.onPressStart = this.onPressStart.bind(this)
+        Navigation.events().bindComponent(this);
         this.state = {
             answeredQuestions :0,
             phoneNumber:"",
@@ -26,9 +28,12 @@ export default class Competition extends  Component {
             getAnsweredRetryCount:0
         };
         this.getData();
-        this.getAnsweredQuestions()
+        this.getAnsweredQuestions();
     }
+    componentDidMount()
+    {
 
+    }
     //this function is passed through the game pages to get updated
     getAnsweredQuestions = () => {
         axios.defaults.timeout = 5*1000;
@@ -40,9 +45,9 @@ export default class Competition extends  Component {
                 "Content-Type": "application/json"
             }
         }).then(response => {
-            const { data : {answered_questions} } = response;
+            const { data : {answered_questions,total_score} } = response;
             this.setState({
-                answeredQuestions :answered_questions
+                answeredQuestions :answered_questions,
             })
         }).catch( error => {
             const {getAnsweredRetryCount} = this.state;
@@ -116,6 +121,9 @@ export default class Competition extends  Component {
                             id:"ScorePhase",
                             name:"ScorePhase",
                             options:{
+                                topBar:{
+                                    visible:false
+                                },
                                 layout:{
                                     orientation:['portrait']
                                 },
@@ -136,6 +144,9 @@ export default class Competition extends  Component {
                             id:"BackgroundScreen",
                             name:"BackgroundScreen",
                             options:{
+                                topBar:{
+                                    visible:false
+                                },
                                 layout:{
                                     orientation:['portrait']
                                 },
@@ -149,6 +160,9 @@ export default class Competition extends  Component {
                                     id:"PreparationPhase",
                                     name:"PreparationPhase",
                                     options:{
+                                        topBar:{
+                                            visible:false
+                                        },
                                         layout:{
                                             orientation:['portrait']
                                         },
@@ -172,6 +186,9 @@ export default class Competition extends  Component {
                             id:"BackgroundScreen",
                             name:"BackgroundScreen",
                             options:{
+                                topBar:{
+                                    visible:false
+                                },
                                 layout:{
                                     orientation:['portrait']
                                 },
@@ -185,6 +202,9 @@ export default class Competition extends  Component {
                                     id:"PreparationPhase",
                                     name:"PreparationPhase",
                                     options:{
+                                        topBar:{
+                                            visible:false
+                                        },
                                         layout:{
                                             orientation:['portrait']
                                         },
@@ -211,8 +231,9 @@ export default class Competition extends  Component {
     render(){
         return(
             <View style={{flex:1,backgroundColor:"#2b2d5d"}}>
-                <TopBar/>
-                <UserRow name={"نام و نام خانوادگی"} phoneNumber={this.state.phoneNumber}/>
+                {/*<TopBar totalScore={this.state.totalScore} />*/}
+                <View  style={{height:HEIGHT/10,width:'100%'}}/>
+                <UserRow  name={"نام و نام خانوادگی"} phoneNumber={this.state.phoneNumber}/>
                 <View style={{flexDirection:"row",width:"90%",marginTop:WIDTH/18,height:HEIGHT/18,alignSelf:"center"}}>
                     <View style={{flex:1,justifyContent:'center',alignItems:"center"}}>
                         <TouchableOpacity style={{justifyContent:'center',alignItems:"center",flexDirection:'row',backgroundColor:"#454672",width:"80%",height:"80%",borderRadius:10}}>

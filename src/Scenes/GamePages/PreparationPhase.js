@@ -1,13 +1,11 @@
 import React,{Component} from "react"
-import {View,ToastAndroid,Text,Image,ImageBackground,TouchableOpacity} from "react-native"
+import {View, ToastAndroid, Text, Image, ImageBackground, TouchableOpacity, BackHandler} from "react-native"
 import StartButton from "../../../assets/img/startButton.png"
 import RegularButton from "../../Components/RegularButton"
 import Camera from "../../../assets/img/camera.png"
-import {FaNum, FaNumBold, HEIGHT, Regular} from "../../Data"
+import {FaNum, HEIGHT, Regular} from "../../Data"
 import {Navigation} from "react-native-navigation";
 import {getPersianNumber} from "../../Helper";
-import {hideError, hideSpinner, showError} from "../../Navigation";
-import credentials from "../../testCredentials";
 import axios from "axios"
 
 export default class PreparationPhase extends Component {
@@ -17,15 +15,21 @@ export default class PreparationPhase extends Component {
         super(props)
         this.onPressStart = this.onPressStart.bind(this);
         this.getVideo = this.getVideo.bind(this);
+        this.handleBack = this.handleBack.bind(this)
         this.getVideo();
         this.state= {
             data:null
         }
         this.dataBackup = null
     }
+    handleBack()
+    {
+        Navigation.popTo("Competition")
+        return true
+    }
     componentDidMount()
     {
-
+        BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     }
     getVideo (){
         axios.defaults.timeout = 5*1000;
@@ -58,6 +62,9 @@ export default class PreparationPhase extends Component {
                             id:"PrestartPhase",
                             name:"PrestartPhase",
                             options:{
+                                topBar:{
+                                    visible:false
+                                },
                                 layout:{
                                     orientation:['portrait']
                                 },
@@ -139,5 +146,9 @@ export default class PreparationPhase extends Component {
                 </View>
             </View>
         )
+    }
+    componentWillUnmount()
+    {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
     }
 }

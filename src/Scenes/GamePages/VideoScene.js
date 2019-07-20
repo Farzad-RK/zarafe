@@ -1,5 +1,5 @@
 import React,{Component} from "react"
-import {View, Text,ToastAndroid} from "react-native"
+import {View, Text, ToastAndroid, BackHandler} from "react-native"
 import axios from "axios"
 import VideoPlayer from "react-native-video";
 import {Navigation} from "react-native-navigation";
@@ -16,14 +16,19 @@ export default class VideoScene extends Component{
         this.onLoadVideo = this.onLoadVideo.bind(this);
         this.onProgress = this.onProgress.bind(this);
         this.onPlayBackEnd = this. onPlayBackEnd.bind(this);
-
+        this.handleBack = this.handleBack.bind(this)
     }
     videoError = () => {
         ToastAndroid.show("مشکل در اجرای ویدیو",ToastAndroid.LONG)
     };
+    handleBack()
+    {
+        return true
+    }
     componentDidMount()
     {
-        this.onPlayBackEnd()
+        // this.onPlayBackEnd()
+        BackHandler.addEventListener('hardwareBackPress', this.handleBack);
     }
 
     onLoadVideo({duration})
@@ -64,6 +69,9 @@ export default class VideoScene extends Component{
                                 id:"AnsweringPhase",
                                 name:"AnsweringPhase",
                                 options:{
+                                    topBar:{
+                                        visible:false
+                                    },
                                     layout:{
                                         orientation:['portrait','landscape']
                                     },
@@ -109,6 +117,6 @@ export default class VideoScene extends Component{
     }
     componentWillUnmount()
     {
-
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBack);
     }
 }

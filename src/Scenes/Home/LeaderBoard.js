@@ -2,7 +2,7 @@ import React,{Component} from "react"
 import {View,Text,FlatList} from "react-native"
 import TopBar from "../../Components/TopBar";
 import LeaderBoardRow from "../../Components/LeaderBoardRow";
-import {WIDTH} from "../../Data";
+import {HEIGHT, WIDTH} from "../../Data";
 export default class LeaderBoard extends  Component
 {
 
@@ -31,7 +31,8 @@ export default class LeaderBoard extends  Component
     {
         return(
             <View style={{flex:1,backgroundColor:"#2b2d5d"}}>
-                <TopBar/>
+                {/*<TopBar/>*/}
+                <View  style={{height:HEIGHT/10,width:'100%'}}/>
                 <View style={{width:"100%",height:"70%"}}>
                     <FlatList
                         contentContainerStyle={{paddingBottom:"10%"}}

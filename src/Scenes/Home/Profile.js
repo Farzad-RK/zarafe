@@ -32,7 +32,8 @@ export default class Profile extends  Component {
     render(){
         return(
             <View style={{flex:1,backgroundColor:"#2b2d5d"}}>
-                <TopBar/>
+                {/*<TopBar/>*/}
+                <View  style={{height:HEIGHT/10,width:'100%'}}/>
                 <View style={{flex:1.8,alignItems:"center",justifyContent:"center"}}>
                     <TouchableOpacity onPress={this.onPressSettings} style={{flexDirection:"row",width:"80%",justifyContent:"center",alignItems:"center",height:"60%",backgroundColor:"#454672",borderRadius:16}}>
                         <Text style={{fontFamily:Regular,fontSize:16,color:"#ffffff"}}>{"  تنظیمات"}</Text>

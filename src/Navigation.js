@@ -59,12 +59,19 @@ export const goToHome = (currentIndex)=>{
             },
         },
         topBar: {
-            visible: false,
+            testID:"TopBar",
+            background:{
+                component :{
+                    name:"TopBar",
+                    passProps:{
+                        totalScore:"",
+                    }
+                }
+            },
+            visible: true,
             drawBehind: true,
-            animate: false,
-
+            animate: true,
         }
-
     });
     Navigation.setRoot({
         root : {
@@ -79,38 +86,63 @@ export const goToHome = (currentIndex)=>{
                     }
                 },
                 children: [
+
                     {
-                        component: {
-                            id:'News',
-                            name: 'News',
+                        stack:{
                             options: {
-                                bottomTab: {
-                                    fontSize: 10,
-                                    text:"",
-                                    icon: news,
-                                    selectedIconColor:'#f2e443',
-                                },
                                 layout: {
-                                    orientation: ['portrait']
+                                    orientation: ['portrait', 'landscape']
                                 }
-                            }
+                            },
+                            id:"newsStack",
+                            children:[
+                                {
+                                    component: {
+                                        id:'News',
+                                        name: 'News',
+                                        options: {
+                                            bottomTab: {
+                                                fontSize: 10,
+                                                text:"",
+                                                icon: news,
+                                                selectedIconColor:'#f2e443',
+                                            },
+                                            layout: {
+                                                orientation: ['portrait']
+                                            }
+                                        }
+                                    },
+                                }
+                            ]
                         },
                     },
                     {
-                        component: {
-                            id:'LeaderBoard',
-                            name: 'LeaderBoard',
+                        stack:{
                             options: {
-                                bottomTab: {
-                                    fontSize: 10,
-                                    text:"",
-                                    icon:leaderBoard ,
-                                    selectedIconColor:'#f2e443',
-                                },
                                 layout: {
                                     orientation: ['portrait']
                                 }
-                            }
+                            },
+                            id:"leaderBoardStack",
+                            children:[
+                                {
+                                    component: {
+                                        id:'LeaderBoard',
+                                        name: 'LeaderBoard',
+                                        options: {
+                                            bottomTab: {
+                                                fontSize: 10,
+                                                text:"",
+                                                icon: leaderBoard,
+                                                selectedIconColor:'#f2e443',
+                                            },
+                                            layout: {
+                                                orientation: ['portrait']
+                                            }
+                                        }
+                                    },
+                                }
+                            ]
                         },
                     },
                     {
@@ -133,6 +165,7 @@ export const goToHome = (currentIndex)=>{
                                                 icon: competition,
                                                 selectedIconColor:'#f2e443',
                                             },
+
                                             layout: {
                                                 orientation: ['portrait']
                                             }
