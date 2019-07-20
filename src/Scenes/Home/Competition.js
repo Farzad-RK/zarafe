@@ -13,8 +13,9 @@ import { Navigation } from 'react-native-navigation'
 import axios from "axios"
 import AsyncStorage from '@react-native-community/async-storage';
 import {hideError, hideSpinner, showError, showSpinner} from "../../Navigation";
-import credentials from "../../testCredentials"
+import {observer} from "mobx-react"
 
+@observer
 export default class Competition extends  Component {
 
     constructor(props){
@@ -41,14 +42,17 @@ export default class Competition extends  Component {
             method: "GET",
             url: "http://193.176.243.56/api/results",
             headers: {
-                "Authorization": credentials["token"],
+                "Authorization": this.props.store.token,
                 "Content-Type": "application/json"
             }
         }).then(response => {
-            const { data : {answered_questions,total_score} } = response;
+            const { data : {answered_questions,total_score,rank} } = response;
             this.setState({
                 answeredQuestions :answered_questions,
-            })
+            });
+            //mutating the states
+            this.props.store.setTotalScore(total_score);
+            this.props.store.setRank(rank);
         }).catch( error => {
             const {getAnsweredRetryCount} = this.state;
             console.log(getAnsweredRetryCount);
@@ -130,8 +134,8 @@ export default class Competition extends  Component {
                                 bottomTabs: { visible: false, drawBehind: true, animate: true }
                             },
                             passProps :{
-                                token :credentials["token"],
-                                phoneNumber:credentials["phoneNumber"]
+                                token :this.props.store.token,
+                                phoneNumber:this.props.store.phoneNumber
                             }
                         }
                     });
@@ -169,9 +173,9 @@ export default class Competition extends  Component {
                                         bottomTabs: { visible: false, drawBehind: true, animate: true }
                                     },
                                     passProps :{
-                                        token :credentials["token"],
                                         updateMainPage:this.getAnsweredQuestions,
-                                        phoneNumber:credentials["phoneNumber"]
+                                        token :this.props.store.token,
+                                        phoneNumber:this.props.store.phoneNumber
                                     }
                                 }
                             })
@@ -211,9 +215,9 @@ export default class Competition extends  Component {
                                         bottomTabs: { visible: false, drawBehind: true, animate: true }
                                     },
                                     passProps :{
-                                        token :credentials["token"],
                                         updateMainPage:this.getAnsweredQuestions,
-                                        phoneNumber:credentials["phoneNumber"]
+                                        token :this.props.store.token,
+                                        phoneNumber:this.props.store.phoneNumber
                                     }
                                 }
                             })
@@ -229,11 +233,12 @@ export default class Competition extends  Component {
         })
     }
     render(){
+        const {store :{phoneNumber}} = this.props;
         return(
             <View style={{flex:1,backgroundColor:"#2b2d5d"}}>
                 {/*<TopBar totalScore={this.state.totalScore} />*/}
                 <View  style={{height:HEIGHT/10,width:'100%'}}/>
-                <UserRow  name={"نام و نام خانوادگی"} phoneNumber={this.state.phoneNumber}/>
+                <UserRow  name={"نام و نام خانوادگی"} phoneNumber={phoneNumber}/>
                 <View style={{flexDirection:"row",width:"90%",marginTop:WIDTH/18,height:HEIGHT/18,alignSelf:"center"}}>
                     <View style={{flex:1,justifyContent:'center',alignItems:"center"}}>
                         <TouchableOpacity style={{justifyContent:'center',alignItems:"center",flexDirection:'row',backgroundColor:"#454672",width:"80%",height:"80%",borderRadius:10}}>

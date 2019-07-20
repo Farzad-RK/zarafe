@@ -1,4 +1,5 @@
 import {Navigation} from "react-native-navigation";
+import React from "react"
 import Root from "./Scenes/Root"
 import Authentication from "./Scenes/Auth/Authentication";
 import SMSverification from "./Scenes/Auth/SMSverification"
@@ -16,7 +17,7 @@ import Settings from "./Scenes/SideScenes/Settings";
 import VideoScene from "./Scenes/GamePages/VideoScene";
 import BackgroundScreen from "./Scenes/GamePages/BackgroundScreen";
 import TopBar from "./Components/TopBar";
-
+import store from "./Store/UserStore"
 export const  RegisterScenes = () =>{
 
     Navigation.registerComponent( `Root`, () => Root);
@@ -32,8 +33,23 @@ export const  RegisterScenes = () =>{
     Navigation.registerComponent( `PreparationPhase`, () => PreparationPhase);
     Navigation.registerComponent( `Authentication` , () => Authentication)
     Navigation.registerComponent( `SMSverification` , () => SMSverification)
-    Navigation.registerComponent( `Competition` , () => Competition)
-    Navigation.registerComponent( `Profile` , () => Profile)
     Navigation.registerComponent( `News` , () => News)
-    Navigation.registerComponent( `LeaderBoard` , () => LeaderBoard)
+
+    Navigation.registerComponent('TopBar', () => (props) => (
+            <TopBar store={store} {...props} />
+    ), () => TopBar);
+
+    Navigation.registerComponent('Competition', () => (props) => (
+            <Competition store={store} {...props} />
+    ), () => Competition);
+
+    Navigation.registerComponent('LeaderBoard', () => (props) => (
+            <LeaderBoard store={store} {...props} />
+    ), () => LeaderBoard);
+
+    Navigation.registerComponent('Profile', () => (props) => (
+            <Profile store={store} {...props} />
+    ), () => Profile);
+
+    return store
 };

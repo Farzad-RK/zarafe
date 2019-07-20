@@ -2,9 +2,6 @@ import React,{Component} from "react"
 import {View,Text,ImageBackground} from "react-native"
 import {FaNum, FaNumBold, HEIGHT, Regular, WIDTH} from "../Data"
 import Svg, {ClipPath, Defs, Path, Image, Use} from "react-native-svg"
-import bronzeMedal from "../../assets/img/bronze-medal.png"
-import goldMedal from "../../assets/img/gold-medal.png"
-import silverMedal from "../../assets/img/silver-medal.png"
 import normalMedal from "../../assets/img/normal-medal.png"
 const path= "M9.5,49.7L49.4,9.7c4.6-4.6,12-4.6,16.6,0L106,49.7c4.6,4.6,4.6,12,0,16.6L66,106.3c-4.6,4.6-12,4.6-16.6,0\n" +
     "\tL9.5,66.3C4.9,61.7,4.9,54.3,9.5,49.7z";

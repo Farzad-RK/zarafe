@@ -14,8 +14,11 @@
     ]
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.4.4",
     "@react-native-community/async-storage": "^1.4.1",
     "axios": "^0.19.0",
+    "mobx": "^5.13.0",
+    "mobx-react": "^6.1.1",
     "react": "16.8.3",
     "react-native": "0.59.2",
     "react-native-circular-progress": "^1.1.0",

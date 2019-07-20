@@ -3,7 +3,10 @@ import {View,Image,Text} from "react-native"
 import {FaNum, HEIGHT, WIDTH} from "../Data";
 import star from "../../assets/img/Star.png"
 import timer from "../../assets/img/Timer.png";
+//mobx
+import {observer} from "mobx-react"
 
+@observer
 export default class TopBar extends  Component {
 
     constructor(props) {
@@ -35,7 +38,7 @@ export default class TopBar extends  Component {
                         textAlignVertical:'center',
                         marginRight:WIDTH/25,
                         width:"65%"}}>
-                        {this.totalScore}
+                        {this.props.store.totalScore}
                     </Text>
                     <Image
                         source={star}

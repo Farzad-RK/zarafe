@@ -5,7 +5,6 @@ import {Navigation} from "react-native-navigation";
 import axios from "axios"
 import QuestionScore from "../../Components/QuestionScore";
 import RegularButton from "../../Components/RegularButton";
-import credentials from "../../testCredentials";
 
 const wrongColor = "#c2272d";
 const correctColor = "#4ab74a";
